@@ -1,0 +1,26 @@
+{
+  "name": "togo5-marketplace",
+  "owner": {
+    "name": "togo5",
+    "url": "https://github.com/togo5"
+  },
+  "metadata": {
+    "description": "togo5's Claude Code plugin collection",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "royals",
+      "source": "./plugins/royals",
+      "description": "チェスをモチーフにしたClaude Codeマルチエージェント管理プラグイン。Queen（メインClaude）が部下（Pawn/Rook/Bishop/Knight）を召喚・統括し、タスクを並列処理する。",
+      "version": "1.0.0",
+      "author": {
+        "name": "togo5",
+        "url": "https://github.com/togo5"
+      },
+      "repository": "https://github.com/togo5/agent-plugins",
+      "license": "MIT",
+      "keywords": ["agents", "multi-agent", "chess", "workflow", "management"]
+    }
+  ]
+}

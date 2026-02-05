@@ -1,0 +1,12 @@
+# Royals - Kingdom (template)
+# session_id: {{SESSION_ID}}
+
+session_id: "{{SESSION_ID}}"
+branch: "{{BRANCH}}"
+started_at: "{{DATE}}"
+
+pieces: []
+
+executions: []
+
+summary: ""

@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/togo5/agent-plugins/plugins/royals/schemas/kingdom.schema.json",
+  "title": "Royals Kingdom",
+  "description": "Schema for managing Royals kingdom state",
+  "type": "object",
+  "required": ["session_id", "branch", "started_at", "pieces", "executions"],
+  "additionalProperties": true,
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}$",
+      "description": "Session ID (8-character hexadecimal)"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch name"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Kingdom founding date (YYYY-MM-DD)"
+    },
+    "pieces": {
+      "type": "array",
+      "description": "List of subordinates",
+      "items": {
+        "$ref": "#/$defs/piece"
+      }
+    },
+    "executions": {
+      "type": "array",
+      "description": "Execution records",
+      "items": {
+        "$ref": "#/$defs/execution"
+      }
+    },
+    "summary": {
+      "type": "string",
+      "description": "Handover notes for the next Queen"
+    }
+  },
+  "$defs": {
+    "piece": {
+      "type": "object",
+      "required": ["agentId", "role", "exp", "level"],
+      "additionalProperties": true,
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7}$",
+          "description": "Agent ID (7-character hexadecimal)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Agent name (e.g., Pawn-I, Bishop-I)"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["pawn", "rook", "bishop", "knight"],
+          "description": "Role/position"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Summon date (YYYY-MM-DD)"
+        },
+        "exp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Experience points"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6,
+          "description": "Level (1-6)"
+        },
+        "title": {
+          "type": "string",
+          "enum": ["Recruit", "Apprentice", "Journeyman", "Veteran", "Master", "Grand Master"],
+          "description": "Title based on level"
+        },
+        "aptitudes": {
+          "type": "object",
+          "description": "Aptitude values (0.0-1.0)",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "quest_history": {
+          "type": "array",
+          "description": "Quest history",
+          "items": {
+            "$ref": "#/$defs/quest"
+          }
+        },
+        "total_tokens_used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cumulative token usage"
+        },
+        "last_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tokens used in last quest"
+        },
+        "last_token_update": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last token update timestamp"
+        }
+      }
+    },
+    "quest": {
+      "type": "object",
+      "required": ["quest", "date", "score", "verdict"],
+      "additionalProperties": true,
+      "properties": {
+        "quest": {
+          "type": "string",
+          "description": "Quest name"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Execution date (YYYY-MM-DD)"
+        },
+        "commits": {
+          "type": "array",
+          "description": "Related git commit hashes",
+          "items": {
+            "type": "string"
+          }
+        },
+        "score": {
+          "type": "integer",
+          "description": "EXP earned"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tech stack tags",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verdict": {
+          "type": "string",
+          "enum": ["excellent", "good", "acceptable", "poor", "failed"],
+          "description": "Evaluation result"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["agentId", "executed_at", "reason"],
+      "additionalProperties": true,
+      "properties": {
+        "agentId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7}$",
+          "description": "Executed agent's ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Executed agent's name"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["pawn", "rook", "bishop", "knight"],
+          "description": "Role at time of execution"
+        },
+        "executed_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Execution date (YYYY-MM-DD)"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for execution"
+        },
+        "last_words": {
+          "type": "string",
+          "description": "Last words before execution"
+        }
+      }
+    }
+  }
+}
