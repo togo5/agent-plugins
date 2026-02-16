@@ -1,0 +1,8 @@
+{
+  "name": "firestore-json",
+  "description": "Firestore REST APIをcurl + gcloud認証で操作するスキル集。ドキュメントの取得・書き込み・一覧・サブコレクション一覧をJSON形式で扱う。",
+  "author": {
+    "name": "togo5",
+    "url": "https://github.com/togo5"
+  }
+}
