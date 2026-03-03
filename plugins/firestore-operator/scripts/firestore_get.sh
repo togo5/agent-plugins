@@ -32,10 +32,10 @@ def decode:
   elif has("doubleValue") then .doubleValue
   elif has("booleanValue") then .booleanValue
   elif has("nullValue") then null
-  elif has("timestampValue") then .timestampValue
-  elif has("geoPointValue") then .geoPointValue
-  elif has("referenceValue") then .referenceValue
-  elif has("bytesValue") then .bytesValue
+  elif has("timestampValue") then {"_type": "timestamp", "value": .timestampValue}
+  elif has("geoPointValue") then {"_type": "geoPoint", "value": .geoPointValue}
+  elif has("referenceValue") then {"_type": "reference", "value": .referenceValue}
+  elif has("bytesValue") then {"_type": "bytes", "value": .bytesValue}
   elif has("arrayValue") then [(.arrayValue.values // [])[] | decode]
   elif has("mapValue") then ((.mapValue.fields // {}) | with_entries(.value |= decode))
   else .

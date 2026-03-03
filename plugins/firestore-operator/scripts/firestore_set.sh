@@ -34,11 +34,25 @@ TOKEN=$(gcloud auth print-access-token 2>/dev/null) || {
   exit 1
 }
 
-URL="https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/${DB_ID}/documents/${DOC_PATH}"
+BASE_URL="https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/${DB_ID}/documents/${DOC_PATH}"
+
+# Build updateMask from top-level keys for merge behavior
+FIELD_PATHS=$(echo "${JSON_DATA}" | jq -r 'keys[]')
+MASK_PARAMS=""
+for FIELD in ${FIELD_PATHS}; do
+  MASK_PARAMS="${MASK_PARAMS}&updateMask.fieldPaths=${FIELD}"
+done
+# Remove leading &
+MASK_PARAMS="${MASK_PARAMS#&}"
+URL="${BASE_URL}?${MASK_PARAMS}"
 
 FIRESTORE_DATA=$(echo "${JSON_DATA}" | jq '
 def encode:
-  if type == "string" then {"stringValue": .}
+  if type == "object" and ._type == "timestamp" then {"timestampValue": .value}
+  elif type == "object" and ._type == "geoPoint" then {"geoPointValue": .value}
+  elif type == "object" and ._type == "reference" then {"referenceValue": .value}
+  elif type == "object" and ._type == "bytes" then {"bytesValue": .value}
+  elif type == "string" then {"stringValue": .}
   elif type == "number" then
     if . == (. | floor) then {"integerValue": (. | tostring)}
     else {"doubleValue": .}
@@ -64,10 +78,10 @@ def decode:
   elif has("doubleValue") then .doubleValue
   elif has("booleanValue") then .booleanValue
   elif has("nullValue") then null
-  elif has("timestampValue") then .timestampValue
-  elif has("geoPointValue") then .geoPointValue
-  elif has("referenceValue") then .referenceValue
-  elif has("bytesValue") then .bytesValue
+  elif has("timestampValue") then {"_type": "timestamp", "value": .timestampValue}
+  elif has("geoPointValue") then {"_type": "geoPoint", "value": .geoPointValue}
+  elif has("referenceValue") then {"_type": "reference", "value": .referenceValue}
+  elif has("bytesValue") then {"_type": "bytes", "value": .bytesValue}
   elif has("arrayValue") then [(.arrayValue.values // [])[] | decode]
   elif has("mapValue") then ((.mapValue.fields // {}) | with_entries(.value |= decode))
   else .
